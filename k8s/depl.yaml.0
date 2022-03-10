@@ -1,0 +1,247 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zookeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: zookeeper
+  template:
+    metadata:
+      labels:
+        name: zookeeper
+    spec:
+      containers:
+      - env:
+        - name: ZOOKEEPER_ID
+          value: "1"
+        - name: ZOOKEEPER_SERVER_1
+          value: zookeeper
+#        - name: ZOO_MAX_CLIENT_CNXNS
+#          value: "1000"
+#        - name: ALLOW_ANONYMOUS_LOGIN
+#          value: "yes"
+        name: zookeeper
+        image: digitalwonderland/zookeeper
+        #image: bitnami/zookeeper:latest
+        #stdin: true
+        #tty: true
+        #command: ["/bin/sh"]
+        #args: ["-c", "while true; do echo 1; sleep infinity;done"]
+        ports:
+        - containerPort: 2181
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: kafka
+  template:
+    metadata:
+      labels:
+        name: kafka
+    spec:
+      containers:
+      - env:
+        - name: ENABLE_AUTO_EXTEND
+          value: "true"
+        - name: KAFKA_RESERVED_BROKER_MAX_ID
+          value: "999999999"
+        - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
+          value: "true"
+        - name: KAFKA_PORT
+          value: "9092"
+        - name: KAFKA_ADVERTISED_PORT
+          value: "9092"
+        - name: KAFKA_ADVERTISED_HOST_NAME
+          value: "kafka"
+        - name: KAFKA_ZOOKEEPER_CONNECT
+          value: zookeeper:2181
+#        - name: KAFKA_CFG_ZOOKEEPER_CONNECT
+#          value: zookeeper:2181
+#        - name: ALLOW_PLAINTEXT_LISTENER
+#          value: "yes"
+        name: kafka
+        image: wurstmeister/kafka
+        #image: bitnami/kafka:latest
+        #stdin: true
+        #tty: true
+        #command: ["/bin/sh"]
+        #args: ["-c", "while true; do echo 1; sleep infinity;done"]
+        ports:
+        - containerPort: 9092
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springkafkacons
+  labels:
+    tags.datadoghq.com/env: "dev"
+    tags.datadoghq.com/service: "springkafkacons"
+    tags.datadoghq.com/version: "12"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: springkafkacons
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        name: springkafkacons
+        tags.datadoghq.com/env: "dev"
+        tags.datadoghq.com/service: "springkafkacons"
+        tags.datadoghq.com/version: "12"
+      annotations:
+        ad.datadoghq.com/springkafkacons.logs: '[{"source": "java", "service": "springkafkacons", "log_processing_rules": [{"type": "multi_line", "name": "log_start_with_date", "pattern" : "\\d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])"}]}]'
+        apm.datadoghq.com/env: '{ "DD_ENV": "dev", "DD_SERVICE": "springkafkacons", "DD_VERSION": "12", "DD_TRACE_ANALYTICS_ENABLED": "true" }'
+    spec:
+      containers:
+      - image: pejdd/springkafkacons:v0
+      #- image: pejdd/switchcons:v0
+        command: ["/bin/sh"]
+        args: ["-c", "java -jar spring-kafka-cons.jar"]
+        #stdin: true
+        #tty: true
+        #command: ["/bin/sh"]
+        #args: ["-c", "while true; do echo 1; sleep infinity;done"]
+        imagePullPolicy: Always
+        name: springkafkacons
+        env:
+          - name: DD_AGENT_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          - name: DD_ENV
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.labels['tags.datadoghq.com/env']
+          - name: DD_SERVICE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.labels['tags.datadoghq.com/service']
+          - name: DD_VERSION
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.labels['tags.datadoghq.com/version']
+          - name: KAFKA_BROKER
+            value: kafka
+          - name: JAVA_TOOL_OPTIONS
+            value: "-javaagent:./dd-java-agent.jar -Dkafka.bootstrap-servers=kafka:9092 -Ddd.env=dev -Ddd.service=springkafkacons -Ddd.version=12 -Ddd.tags=env:dev -Ddd.trace.sample.rate=1 -Ddd.logs.injection=true -Ddd.profiling.enabled=true -XX:FlightRecorderOptions=stackdepth=256 -Ddd.trace.http.client.split-by-domain=true"
+        ports:
+          - containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springkafkaprod
+  labels:
+    tags.datadoghq.com/env: "dev"
+    tags.datadoghq.com/service: "springkafkaprod"
+    tags.datadoghq.com/version: "12"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: springkafkaprod
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        name: springkafkaprod
+        tags.datadoghq.com/env: "dev"
+        tags.datadoghq.com/service: "springkafkaprod"
+        tags.datadoghq.com/version: "12"
+      annotations:
+        ad.datadoghq.com/springkafkaprod.logs: '[{"source": "java", "service": "springkafkaprod", "log_processing_rules": [{"type": "multi_line", "name": "log_start_with_date", "pattern" : "\\d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])"}]}]'
+        apm.datadoghq.com/env: '{ "DD_ENV": "dev", "DD_SERVICE": "springkafkaprod", "DD_VERSION": "12", "DD_TRACE_ANALYTICS_ENABLED": "true" }'
+    spec:
+      containers:
+      - image: pejdd/springkafkaprod:v0
+      #- image: pejdd/switchprod:v0
+        command: ["/bin/sh"]
+        args: ["-c", "java -jar spring-kafka-prod.jar --server.port=8088"]
+        #stdin: true
+        #tty: true
+        #command: ["/bin/sh"]
+        #args: ["-c", "while true; do echo 1; sleep infinity;done"]
+        imagePullPolicy: Always
+        name: springkafkaprod
+        env:
+          - name: DD_AGENT_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          - name: DD_ENV
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.labels['tags.datadoghq.com/env']
+          - name: DD_SERVICE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.labels['tags.datadoghq.com/service']
+          - name: DD_VERSION
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.labels['tags.datadoghq.com/version']
+          - name: KAFKA_BROKER
+            value: kafka
+          - name: JAVA_TOOL_OPTIONS
+            value: "-javaagent:./dd-java-agent.jar -Dkafka.bootstrap-servers=kafka:9092 -Ddd.tags=env:dev -Ddd.trace.sample.rate=1 -Ddd.logs.injection=true -Ddd.profiling.enabled=true -XX:FlightRecorderOptions=stackdepth=256 -Ddd.trace.http.client.split-by-domain=true"
+        ports:
+          - containerPort: 8088
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cassandra
+  labels:
+    tags.datadoghq.com/env: "dev"
+    tags.datadoghq.com/service: "cassandra"
+    tags.datadoghq.com/version: "12"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: cassandra
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: cassandra
+        name: cassandra
+        tags.datadoghq.com/env: "dev"
+        tags.datadoghq.com/service: "cassandra"
+        tags.datadoghq.com/version: "12"
+    spec:
+      containers:
+      - image: pejdd/cassandradb:v0
+        imagePullPolicy: Always
+        name: cassandra
+        ports:
+          - containerPort: 9042
+            name: cql
+          - containerPort: 7199
+            name: jmx
+          - containerPort: 9160
+            name: sec

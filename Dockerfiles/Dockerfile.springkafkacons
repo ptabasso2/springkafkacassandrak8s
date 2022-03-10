@@ -1,0 +1,22 @@
+FROM adoptopenjdk/openjdk11:ubuntu-nightly-slim
+
+ENV PS1A="[\[\e[1m\]\[\e[38;5;46m\]\u\[\e[0m\]@\h:\[\e[1m\]\[\e[38;5;21m\]\w\[\e[0m\]]$ "
+ENV TZ="Europe/Paris"
+
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN apt update \
+ && apt -y install net-tools iputils-ping curl vim procps netcat wget gnupg2 apt-transport-https sudo lsof unzip git \
+ && echo "alias ll='ls -lrt'" >> /root/.bashrc && echo 'PS1=$PS1A' >> ~/.bashrc && echo 'HISTFILESIZE=20000' >> ~/.bashrc && echo 'HISTSIZE=10000' >> ~/.bashrc
+
+WORKDIR /app
+
+ENV KAFKA_BROKER=kafka
+
+
+COPY ../springkafkacons/build/libs/spring-kafka-cons.jar spring-kafka-cons.jar
+RUN wget -O dd-java-agent.jar 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.datadoghq&a=dd-java-agent&v=LATEST'
+
+
+EXPOSE 8080
+CMD java -javaagent:./dd-java-agent.jar -Ddd.service=springkafkakcons -Dkafka.bootstrap-servers=$KAFKA_BROKER:9092 -Ddd.env=dev -Ddd.tags=env:dev -Ddd.version=12 -Ddd.trace.sample.rate=1 -Ddd.logs.injection=true -Ddd.profiling.enabled=true -XX:FlightRecorderOptions=stackdepth=256 -Ddd.trace.http.client.split-by-domain=true -jar spring-kafka-cons.jar

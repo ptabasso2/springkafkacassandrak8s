@@ -1,0 +1,13 @@
+# Based on the product-recommendation-db Dockerfile
+FROM cassandra 
+
+COPY start.sh .
+COPY cassandra.yaml /opt/cassandra/conf/cassandra.yaml
+
+
+ENV CASSANDRA_START_RPC=true
+ENV LOCAL_JMX=no
+
+#EXPOSE 9042 9160 7199
+
+CMD ["./start.sh"]

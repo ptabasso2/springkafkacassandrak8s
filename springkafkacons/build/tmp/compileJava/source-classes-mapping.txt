@@ -1,0 +1,16 @@
+com/datadog/pej/kafka/KafkaController.java
+ com.datadog.pej.kafka.KafkaController
+com/datadog/pej/kafka/Quote.java
+ com.datadog.pej.kafka.Quote
+com/datadog/pej/kafka/Value.java
+ com.datadog.pej.kafka.Value
+com/datadog/pej/kafka/repository/GuideRepository.java
+ com.datadog.pej.kafka.repository.GuideRepository
+com/datadog/pej/kafka/model/Guide.java
+ com.datadog.pej.kafka.model.Guide
+com/datadog/pej/kafka/SpringKafkaApplication.java
+ com.datadog.pej.kafka.SpringKafkaApplication
+com/datadog/pej/kafka/ReceiverConfig.java
+ com.datadog.pej.kafka.ReceiverConfig
+com/datadog/pej/kafka/Receiver.java
+ com.datadog.pej.kafka.Receiver
