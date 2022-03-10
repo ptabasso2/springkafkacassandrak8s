@@ -143,3 +143,12 @@ test
 ```
 
 In this example this is the external IP of the loadbalancer (springkafkaprod) that is being used.
+
+
+### _Results_
+
+<p align="center">
+  <img src="img/img0.png" width="650" />
+</p>
+
+
