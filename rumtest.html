@@ -23,5 +23,19 @@
 <html>
 <h1 >Loading page!</h1>
 <a href="http://35.195.97.75:8088/test">http://35.195.97.75:8088/test</a>
-</body>
+<body>
+    <script>
+        fetch("http://35.195.97.75:8088/test")
+        .then(function (response) {
+        return response.json();
+    })
+    .then(function (myJson) {
+    console.log(myJson.ip);
+    })
+    .catch(function (error) {
+    console.log("Error: " + error);
+    });
+    </script>
+
+</body>    
 </html>
