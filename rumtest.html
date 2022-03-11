@@ -27,7 +27,7 @@
     <script>
         fetch("http://35.195.97.75:8088/test")
         .then(function (response) {
-        return response.json();
+        return response.text();
     })
     .then(function (myJson) {
     console.log(myJson.ip);
