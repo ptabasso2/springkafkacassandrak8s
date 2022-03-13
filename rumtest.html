@@ -1,4 +1,6 @@
 <!doctype html>
+<meta http-equiv="Access-Control-Allow-Origin" content="*"/>
+
 <script
     src="https://www.datadoghq-browser-agent.com/datadog-rum-v4.js"
     type="text/javascript">
@@ -14,7 +16,8 @@
         // version: '1.0.0',
         sampleRate: 100,
         trackInteractions: true,
-        defaultPrivacyLevel: 'mask-user-input'
+        defaultPrivacyLevel: 'mask-user-input',
+        allowedTracingOrigins: ["http://35.195.97.75"]
     }); 
 
     window.DD_RUM &&
@@ -25,16 +28,41 @@
 <a href="http://35.195.97.75:8088/test">http://35.195.97.75:8088/test</a>
 <body>
     <script>
-        fetch("http://35.195.97.75:8088/test")
-        .then(function (response) {
-        return response.text();
-    })
-    .then(function (myJson) {
-    console.log(myJson.ip);
-    })
-    .catch(function (error) {
-    console.log("Error: " + error);
-    });
+ //       fetch("http://35.195.97.75:8088/test")
+ //       .then(function (response) {
+ //       return response.text();
+ //   })
+ //   .then(function (data) {
+ //   console.log(data);
+ //   })
+ //   .catch(function (error) {
+ //   console.log("Error: " + error);
+ //   });
+
+    const xhr = new XMLHttpRequest()
+    //open a get request with the remote server URL
+    xhr.open("GET", "http://35.195.97.75:8088/test")
+    //send the Http request
+    xhr.send()
+
+    //EVENT HANDLERS
+
+    //triggered when the response is completed
+    xhr.onload = function() {
+    if (xhr.status === 200) {
+        //parse JSON datax`x
+        //data = JSON.parse(xhr.responseText)
+        data = xhr.responseText
+        console.log(data)
+    } else if (xhr.status === 404) {
+        console.log("No records found")
+    }
+    }
+
+    //triggered when a network-level error occurs with the request
+    xhr.onerror = function() {
+    console.log("Network error occurred")
+    }
     </script>
 
 </body>    
