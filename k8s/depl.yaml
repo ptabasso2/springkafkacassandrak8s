@@ -88,11 +88,25 @@ spec:
         ad.datadoghq.com/springkafkacons.logs: '[{"source": "java", "service": "springkafkacons", "log_processing_rules": [{"type": "multi_line", "name": "log_start_with_date", "pattern" : "\\d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])"}]}]'
         apm.datadoghq.com/env: '{ "DD_ENV": "dev", "DD_SERVICE": "springkafkacons", "DD_VERSION": "12", "DD_TRACE_ANALYTICS_ENABLED": "true" }'
     spec:
+      initContainers:
+      - name: javaagent
+        image: pejdd/testinit:v0
+        command:
+        - wget
+        - "-O"
+        - "/work-dir/dd-java-agent.jar"
+        - https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.datadoghq&a=dd-java-agent&v=LATEST
+        volumeMounts:
+        - name: workdir
+          mountPath: /work-dir
       containers:
       - image: pejdd/springkafkacons:v0
         command: ["/bin/sh"]
         args: ["-c", "java -jar spring-kafka-cons.jar"]
         imagePullPolicy: Always
+        volumeMounts:
+        - name: workdir
+          mountPath: /app/javaagent
         name: springkafkacons
         env:
           - name: DD_AGENT_HOST
@@ -122,6 +136,9 @@ spec:
               -Ddd.trace.http.client.split-by-domain=true
         ports:
           - containerPort: 8080
+      volumes:
+      - name: workdir
+        emptyDir: {}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -153,11 +170,25 @@ spec:
         ad.datadoghq.com/springkafkaprod.logs: '[{"source": "java", "service": "springkafkaprod", "log_processing_rules": [{"type": "multi_line", "name": "log_start_with_date", "pattern" : "\\d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])"}]}]'
         apm.datadoghq.com/env: '{ "DD_ENV": "dev", "DD_SERVICE": "springkafkaprod", "DD_VERSION": "12", "DD_TRACE_ANALYTICS_ENABLED": "true" }'
     spec:
+      initContainers:
+      - name: javaagent
+        image: pejdd/testinit:v0
+        command:
+        - wget
+        - "-O"
+        - "/work-dir/dd-java-agent.jar"
+        - https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.datadoghq&a=dd-java-agent&v=LATEST
+        volumeMounts:
+        - name: workdir
+          mountPath: /work-dir
       containers:
       - image: pejdd/springkafkaprod:v1
         command: ["/bin/sh"]
         args: ["-c", "java -jar spring-kafka-prod.jar --server.port=8088"]
         imagePullPolicy: Always
+        volumeMounts:
+        - name: workdir
+          mountPath: /app/javaagent
         name: springkafkaprod
         env:
           - name: DD_AGENT_HOST
@@ -187,6 +218,9 @@ spec:
               -Ddd.trace.http.client.split-by-domain=true
         ports:
           - containerPort: 8088
+      volumes:
+      - name: workdir
+        emptyDir: {}
 ---
 apiVersion: apps/v1
 kind: Deployment
