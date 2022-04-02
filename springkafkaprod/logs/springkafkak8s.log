@@ -1,0 +1,82 @@
+2022-03-11 13:23:24 [main] INFO  c.d.pej.kafka.SpringKafkaApplication -   - Starting SpringKafkaApplication on COMP10619.local with PID 57754 (/Users/pejman.tabassomi/Kafka/springkafkaprod/build/libs/spring-kafka-prod.jar started by pejman.tabassomi in /Users/pejman.tabassomi/Kafka/springkafkaprod)
+2022-03-11 13:23:24 [main] INFO  c.d.pej.kafka.SpringKafkaApplication -   - No active profile set, falling back to default profiles: default
+2022-03-11 13:23:25 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker -   - Bean 'org.springframework.kafka.annotation.KafkaBootstrapConfiguration' of type [org.springframework.kafka.annotation.KafkaBootstrapConfiguration$$EnhancerBySpringCGLIB$$90572c40] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2022-03-11 13:23:25 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer -   - Tomcat initialized with port(s): 8080 (http)
+2022-03-11 13:23:25 [main] INFO  o.a.catalina.core.StandardService -   - Starting service [Tomcat]
+2022-03-11 13:23:25 [main] INFO  o.a.catalina.core.StandardEngine -   - Starting Servlet Engine: Apache Tomcat/9.0.12
+2022-03-11 13:23:25 [main] INFO  o.a.c.core.AprLifecycleListener -   - The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [/Users/pejman.tabassomi/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.]
+2022-03-11 13:23:25 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] -   - Initializing Spring embedded WebApplicationContext
+2022-03-11 13:23:25 [main] INFO  o.s.web.context.ContextLoader -   - Root WebApplicationContext: initialization completed in 1409 ms
+2022-03-11 13:23:25 [main] INFO  o.s.b.w.s.ServletRegistrationBean -   - Servlet dispatcherServlet mapped to [/]
+2022-03-11 13:23:25 [main] INFO  o.s.b.w.s.FilterRegistrationBean -   - Mapping filter: 'characterEncodingFilter' to: [/*]
+2022-03-11 13:23:25 [main] INFO  o.s.b.w.s.FilterRegistrationBean -   - Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2022-03-11 13:23:25 [main] INFO  o.s.b.w.s.FilterRegistrationBean -   - Mapping filter: 'formContentFilter' to: [/*]
+2022-03-11 13:23:25 [main] INFO  o.s.b.w.s.FilterRegistrationBean -   - Mapping filter: 'requestContextFilter' to: [/*]
+2022-03-11 13:23:25 [main] INFO  o.s.s.c.ThreadPoolTaskExecutor -   - Initializing ExecutorService 'applicationTaskExecutor'
+2022-03-11 13:23:26 [main] INFO  o.a.k.c.admin.AdminClientConfig -   - AdminClientConfig values: 
+	bootstrap.servers = [localhost:9092]
+	client.id = 
+	connections.max.idle.ms = 300000
+	metadata.max.age.ms = 300000
+	metric.reporters = []
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	receive.buffer.bytes = 65536
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 120000
+	retries = 5
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.mechanism = GSSAPI
+	security.protocol = PLAINTEXT
+	send.buffer.bytes = 131072
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.1, TLSv1]
+	ssl.endpoint.identification.algorithm = https
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLS
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+
+2022-03-11 13:23:26 [main] INFO  o.a.kafka.common.utils.AppInfoParser -   - Kafka version : 2.0.0
+2022-03-11 13:23:26 [main] INFO  o.a.kafka.common.utils.AppInfoParser -   - Kafka commitId : 3402a8361b734732
+2022-03-11 13:23:26 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient -   - [AdminClient clientId=adminclient-1] Connection to node -1 could not be established. Broker may not be available.
+2022-03-11 13:23:26 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient -   - [AdminClient clientId=adminclient-1] Connection to node -1 could not be established. Broker may not be available.
+2022-03-11 13:23:26 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient -   - [AdminClient clientId=adminclient-1] Connection to node -1 could not be established. Broker may not be available.
+2022-03-11 13:23:26 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient -   - [AdminClient clientId=adminclient-1] Connection to node -1 could not be established. Broker may not be available.
+2022-03-11 13:23:27 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient -   - [AdminClient clientId=adminclient-1] Connection to node -1 could not be established. Broker may not be available.
+2022-03-11 13:23:27 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient -   - [AdminClient clientId=adminclient-1] Connection to node -1 could not be established. Broker may not be available.
+2022-03-11 13:23:29 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient -   - [AdminClient clientId=adminclient-1] Connection to node -1 could not be established. Broker may not be available.
+2022-03-11 13:23:30 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient -   - [AdminClient clientId=adminclient-1] Connection to node -1 could not be established. Broker may not be available.
+2022-03-11 13:23:31 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient -   - [AdminClient clientId=adminclient-1] Connection to node -1 could not be established. Broker may not be available.
+2022-03-11 13:23:32 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient -   - [AdminClient clientId=adminclient-1] Connection to node -1 could not be established. Broker may not be available.
+2022-03-11 13:23:33 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient -   - [AdminClient clientId=adminclient-1] Connection to node -1 could not be established. Broker may not be available.
+2022-03-11 13:23:34 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient -   - [AdminClient clientId=adminclient-1] Connection to node -1 could not be established. Broker may not be available.
+2022-03-11 13:23:34 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient -   - [AdminClient clientId=adminclient-1] Connection to node -1 could not be established. Broker may not be available.
+2022-03-11 13:23:36 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient -   - [AdminClient clientId=adminclient-1] Connection to node -1 could not be established. Broker may not be available.
+2022-03-11 13:23:37 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient -   - [AdminClient clientId=adminclient-1] Connection to node -1 could not be established. Broker may not be available.
+2022-03-11 13:23:37 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient -   - [AdminClient clientId=adminclient-1] Connection to node -1 could not be established. Broker may not be available.
+2022-03-11 13:23:38 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient -   - [AdminClient clientId=adminclient-1] Connection to node -1 could not be established. Broker may not be available.
+2022-03-11 13:23:39 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient -   - [AdminClient clientId=adminclient-1] Connection to node -1 could not be established. Broker may not be available.

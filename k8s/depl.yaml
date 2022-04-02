@@ -154,7 +154,7 @@ spec:
         apm.datadoghq.com/env: '{ "DD_ENV": "dev", "DD_SERVICE": "springkafkaprod", "DD_VERSION": "12", "DD_TRACE_ANALYTICS_ENABLED": "true" }'
     spec:
       containers:
-      - image: pejdd/springkafkaprod:v0
+      - image: pejdd/springkafkaprod:v1
         command: ["/bin/sh"]
         args: ["-c", "java -jar spring-kafka-prod.jar --server.port=8088"]
         imagePullPolicy: Always
