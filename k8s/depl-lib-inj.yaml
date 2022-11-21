@@ -1,0 +1,191 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zookeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: zookeeper
+  template:
+    metadata:
+      labels:
+        name: zookeeper
+    spec:
+      containers:
+      - env:
+        - name: ZOOKEEPER_ID
+          value: "1"
+        - name: ZOOKEEPER_SERVER_1
+          value: zookeeper
+        name: zookeeper
+        image: digitalwonderland/zookeeper
+        ports:
+        - containerPort: 2181
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: kafka
+  template:
+    metadata:
+      labels:
+        name: kafka
+    spec:
+      containers:
+      - env:
+        - name: ENABLE_AUTO_EXTEND
+          value: "true"
+        - name: KAFKA_RESERVED_BROKER_MAX_ID
+          value: "999999999"
+        - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
+          value: "true"
+        - name: KAFKA_PORT
+          value: "9092"
+        - name: KAFKA_ADVERTISED_PORT
+          value: "9092"
+        - name: KAFKA_ADVERTISED_HOST_NAME
+          value: "kafka"
+        - name: KAFKA_ZOOKEEPER_CONNECT
+          value: zookeeper:2181
+        name: kafka
+        image: wurstmeister/kafka
+        ports:
+        - containerPort: 9092
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springkafkacons
+  labels:
+    tags.datadoghq.com/env: "dev"
+    tags.datadoghq.com/service: "springkafkacons"
+    tags.datadoghq.com/version: "12"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: springkafkacons
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        name: springkafkacons
+        tags.datadoghq.com/env: "dev"
+        tags.datadoghq.com/service: "springkafkacons"
+        tags.datadoghq.com/version: "12"
+        admission.datadoghq.com/enabled: "true"
+      annotations:
+        admission.datadoghq.com/java-lib.version: "latest"
+    spec:
+      containers:
+      - image: pejdd/springkafkacons:v0
+        command: ["/bin/sh"]
+        args: ["-c", "java -jar spring-kafka-cons.jar"]
+        imagePullPolicy: Always
+        name: springkafkacons
+        env:
+          - name: KAFKA_BOOTSTRAP_SERVERS
+            value: kafka:9092
+          - name: KAFKA_BROKER
+            value: kafka
+          #- name: DD_TRACE_AGENT_URL
+          #  value: unix:///var/run/datadog/apm.socket
+        ports:
+          - containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springkafkaprod
+  labels:
+    tags.datadoghq.com/env: "dev"
+    tags.datadoghq.com/service: "springkafkaprod"
+    tags.datadoghq.com/version: "12"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: springkafkaprod
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        name: springkafkaprod
+        tags.datadoghq.com/env: "dev"
+        tags.datadoghq.com/service: "springkafkaprod"
+        tags.datadoghq.com/version: "12"
+        admission.datadoghq.com/enabled: "true"
+      annotations:
+        admission.datadoghq.com/java-lib.version: "latest"
+    spec:
+      containers:
+      - image: pejdd/springkafkaprod:v1
+        command: ["/bin/sh"]
+        args: ["-c", "java -jar spring-kafka-prod.jar --server.port=8088"]
+        imagePullPolicy: Always
+        name: springkafkaprod
+        env:
+          - name: KAFKA_BOOTSTRAP_SERVERS
+            value: kafka:9092
+          - name: KAFKA_BROKER
+            value: kafka
+          #- name: DD_TRACE_AGENT_URL
+          #  value: unix:///var/run/datadog/apm.socket
+        ports:
+          - containerPort: 8088
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cassandra
+  labels:
+    tags.datadoghq.com/env: "dev"
+    tags.datadoghq.com/service: "cassandra"
+    tags.datadoghq.com/version: "12"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: cassandra
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: cassandra
+        name: cassandra
+        tags.datadoghq.com/env: "dev"
+        tags.datadoghq.com/service: "cassandra"
+        tags.datadoghq.com/version: "12"
+    spec:
+      containers:
+      - image: pejdd/cassandradb:v0
+        imagePullPolicy: Always
+        name: cassandra
+        ports:
+          - containerPort: 9042
+            name: cql
+          - containerPort: 7199
+            name: jmx
+          - containerPort: 9160
+            name: sec
